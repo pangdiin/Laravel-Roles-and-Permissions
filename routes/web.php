@@ -3,7 +3,7 @@
 Route::get('/', function (\Illuminate\Http\Request $request) {
 	$user = $request->user();
 
-	$user->updatePermissions(['delete posts']); //'edit posts','delete posts'
+	$user->updatePermissions(['edit posts']); //'edit posts','delete posts'
 
 	return new \Illuminate\Http\Response('hello', 200);
 });
