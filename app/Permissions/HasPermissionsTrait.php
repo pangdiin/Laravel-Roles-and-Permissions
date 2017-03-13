@@ -2,12 +2,43 @@
 
 namespace App\Permissions;
 
-use App\Role;
-use App\User;
-use App\Permission;
+
+use App\{Role, Permission};
 
 trait HasPermissionsTrait
 {
+	// giving permission to user
+	public function givePermissionTo(...$permissions)
+	{
+		$permissions = $this->getAllPermissions(array_flatten($permissions));
+
+		if ($permissions === null) {
+			return $this;
+		}
+
+		$this->permissions()->saveMany($permissions);
+
+		return $this;
+	}
+
+	// delete permission
+	public function withdrawPermissionTo(...$permissions)
+	{
+		$permissions = $this->getAllPermissions(array_flatten($permissions));
+
+		$this->permissions()->detach($permissions);
+
+		return $this;
+	}
+
+	// refresh permission
+	public function updatePermissions(...$permissions)
+	{
+		$this->permissions()->detach();
+
+		return $this->givePermissionTo($permissions);
+	}
+
 	public function hasRole(...$roles)
 	{
 		foreach ($roles as $role) {
@@ -32,6 +63,12 @@ trait HasPermissionsTrait
 		}
 
 		return false;
+	}
+
+	// return as a collection
+	protected function getAllPermissions(array $permissions)
+	{
+		return Permission::whereIn('name', $permissions)->get();
 	}
 
 	public function hasPermission($permission)
