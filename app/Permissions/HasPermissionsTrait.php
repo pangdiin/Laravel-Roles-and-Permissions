@@ -8,11 +8,6 @@ use App\Permission;
 
 trait HasPermissionsTrait
 {
-	public function hasPermissionTo($permission)
-	{
-		return $this->hasPermission($permission)
-	}
-
 	public function hasRole(...$roles)
 	{
 		foreach ($roles as $role) {
@@ -26,6 +21,11 @@ trait HasPermissionsTrait
 	public function hasPermission($permission)
 	{
 		return (bool) $this->permissions->where('name', $permission->name)->count();
+	}
+
+	public function hasPermissionTo($permission)
+	{
+		return $this->hasPermission($permission);
 	}
 
 	public function roles()
