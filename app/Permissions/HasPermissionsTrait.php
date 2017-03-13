@@ -18,14 +18,25 @@ trait HasPermissionsTrait
 		return false;
 	}
 
+	public function hasPermissionTo($permission)
+	{
+		return $this->hasPermissionThroughRole($permission) || $this->hasPermission($permission);
+	}
+
+	protected function hasPermissionThroughRole($permission)
+	{
+		foreach ($permission->roles as $role) {
+			if ($this->roles->contains($role)) {
+					return true;
+			}
+		}
+
+		return false;
+	}
+
 	public function hasPermission($permission)
 	{
 		return (bool) $this->permissions->where('name', $permission->name)->count();
-	}
-
-	public function hasPermissionTo($permission)
-	{
-		return $this->hasPermission($permission);
 	}
 
 	public function roles()
